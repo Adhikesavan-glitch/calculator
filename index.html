@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .calculator {
+            background-color: #000000;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+            width: 280px;
+        }
+
+        .display {
+            background-color: #333333;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            margin-bottom: 20px;
+            height: 50px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .button {
+            background-color: #424242;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button:active {
+            background-color: #616161;
+        }
+
+        .button.operator {
+            background-color: #1e88e5;
+        }
+
+        .button.clear {
+            background-color: #d32f2f;
+        }
+
+        .button.clear:active {
+            background-color: #b71c1c;
+        }
+
+        .button.delete {
+            background-color: #fbc02d;
+        }
+
+        .button.delete:active {
+            background-color: #f9a825;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="button" onclick="appendNumber(1)">1</button>
+            <button class="button" onclick="appendNumber(2)">2</button>
+            <button class="button" onclick="appendNumber(3)">3</button>
+            <button class="button operator" onclick="chooseOperator('+')">+</button>
+            <button class="button" onclick="appendNumber(4)">4</button>
+            <button class="button" onclick="appendNumber(5)">5</button>
+            <button class="button" onclick="appendNumber(6)">6</button>
+            <button class="button operator" onclick="chooseOperator('-')">-</button>
+            <button class="button" onclick="appendNumber(7)">7</button>
+            <button class="button" onclick="appendNumber(8)">8</button>
+            <button class="button" onclick="appendNumber(9)">9</button>
+            <button class="button operator" onclick="chooseOperator('*')">×</button>
+            <button class="button" onclick="appendNumber(0)">0</button>
+            <button class="button" onclick="appendNumber('00')">00</button>
+            <button class="button" onclick="appendNumber('.')">.</button>
+            <button class="button operator" onclick="chooseOperator('/')">÷</button>
+            <button class="button clear" onclick="clearDisplay()">C</button>
+            <button class="button delete" onclick="deleteLast()">DEL</button>
+            <button class="button operator" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let currentInput = "";
+        let operator = null;
+        let previousInput = "";
+
+        function appendNumber(number) {
+            if (currentInput === "0" && number !== '.') currentInput = "";
+            if (number === '.' && currentInput.includes('.')) return;
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function chooseOperator(op) {
+            if (currentInput === "") return;
+            if (previousInput !== "") calculate();
+            operator = op;
+            previousInput = currentInput;
+            currentInput = "";
+        }
+
+        function calculate() {
+            let result;
+            const prev = parseFloat(previousInput);
+            const curr = parseFloat(currentInput);
+            if (isNaN(prev) || isNaN(curr)) return;
+            switch (operator) {
+                case "+":
+                    result = prev + curr;
+                    break;
+                case "-":
+                    result = prev - curr;
+                    break;
+                case "*":
+                    result = prev * curr;
+                    break;
+                case "/":
+                    result = prev / curr;
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result;
+            operator = null;
+            previousInput = "";
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = "0";
+            operator = null;
+            previousInput = "";
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            currentInput = currentInput.toString().slice(0, -1);
+            if (currentInput === "") currentInput = "0";
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById("display").innerText = currentInput;
+        }
+    </script>
+</body>
+</html>
